@@ -1,0 +1,53 @@
+{
+  "display": "Helbindi, Savage Scourge",
+  "name": "Helbindi",
+  "title": "Savage Scourge",
+  "id": "helbindi-savage-scourge",
+  "color": "Green",
+  "weapon_type": "Axe",
+  "link": "https://kagerochart.com/hero/helbindi-savage-scourge",
+  "move_type": "Infantry",
+  "weapon": [
+    "byleistr",
+    "silver-axe",
+    "steel-axe",
+    "iron-axe"
+  ],
+  "special": [
+    "vengeance",
+    "retribution"
+  ],
+  "passive_a": [
+    "g-duel-infantry-3",
+    "g-duel-infantry-2",
+    "g-duel-infantry-1"
+  ],
+  "passive_b": [
+    "guard-3",
+    "guard-2",
+    "guard-1"
+  ],
+  "passive_c": [
+    "infantry-pulse-3",
+    "infantry-pulse-2",
+    "infantry-pulse-1"
+  ],
+  "base_stat": {
+    "star_5": {
+      "hp": 18,
+      "atk": 9,
+      "spd": 5,
+      "def": 9,
+      "res": 7
+    },
+    "growth": {
+      "hp": 60,
+      "atk": 60,
+      "spd": 30,
+      "def": 60,
+      "res": 55,
+      "total": 265
+    },
+    "growth_type": 191
+  }
+}

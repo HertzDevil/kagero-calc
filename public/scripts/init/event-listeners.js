@@ -83,6 +83,29 @@ $(".curr-hp-val").on("change", function() {
     updateDisplay();
 });
 
+//level update
+$(".level-val").on("change", function() {
+    var charNum = $(this).data("charnum").toString();
+
+    // current level cannot be greater than 40
+    if (this.value > 40) {
+        this.value = 40;
+    }
+
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        displayStatTotals(charNum);
+    }
+
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
+
+    charChange(charNum);
+    updateDisplay();
+});
+
 // setup special cooldown updates
 $(".spec-cool").on("change", function() {
     var charNum = $(this).data("charnum").toString();
@@ -112,6 +135,11 @@ $(".char-tab, .char-tab-unselected").on("click", function() {
 $(".char-selector").on("change", function() {
     var charNum = $(this).data("charnum").toString();
     displayChar(this.value, charNum, true);
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
     charChange(charNum);
     updateDisplay();
 });
@@ -121,7 +149,14 @@ $(".weapon-selector").on("change", function (){
     var charNum = $(this).data("charnum").toString();
     showWeapon(this.value, charNum, true, true);
     updateRefinements($("#weapon-" + charNum).val(), charNum);
-    displayStatTotals(charNum);
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        displayStatTotals(charNum);
+    }
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
     charChange(charNum);
     updateDisplay();
 });
@@ -129,7 +164,17 @@ $(".weapon-selector").on("change", function (){
 // setup refinement select
 $(".refinement-selector").on("change", function (){
     var charNum = $(this).data("charnum").toString();
-    displayStatTotals(charNum);
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        displayStatTotals(charNum);
+    }
+    else {
+        displayRefinement(charNum);
+    }
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
     charChange(charNum);
     updateDisplay();
 });
@@ -137,7 +182,31 @@ $(".refinement-selector").on("change", function (){
 // setup blessing select
 $(".blessing-selector").on("change", function (){
     var charNum = $(this).data("charnum").toString();
-    displayStatTotals(charNum);
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        displayStatTotals(charNum);
+    }
+    else {
+        var selectID ="#blessing-"+charNum;
+        var blessName = $(selectID).val();
+        updateStatTotal(selectID, charNum, false);
+        $(selectID).data("info", blessingsInfo[blessName]);
+        updateStatTotal(selectID, charNum, true);
+		selectID ="#blessing2-"+charNum;
+        blessName = $(selectID).val();
+        updateStatTotal(selectID, charNum, false);
+        $(selectID).data("info", blessingsInfo[blessName]);
+        updateStatTotal(selectID, charNum, true);
+		selectID ="#blessing3-"+charNum;
+        blessName = $(selectID).val();
+        updateStatTotal(selectID, charNum, false);
+        $(selectID).data("info", blessingsInfo[blessName]);
+        updateStatTotal(selectID, charNum, true);
+    }
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
     charChange(charNum);
     updateDisplay();
 });
@@ -148,6 +217,11 @@ $(".special-selector").on("change", function (){
     getSpecialData(charNum);
     showSpecCooldown(this.value, charNum, false);
     updateSpecCooldown(charNum);
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
     charChange(charNum);
     updateDisplay();
 });
@@ -156,6 +230,11 @@ $(".special-selector").on("change", function (){
 $(".assist-selector").on("change", function (){
     var charNum = $(this).data("charnum").toString();
     getAssistData(charNum);
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
     updateSpecCooldown(charNum);
     charChange(charNum);
     updateDisplay();
@@ -166,6 +245,20 @@ $(".passive-selector").on("change", function (){
     var charNum = $(this).data("charnum").toString();
     var skillType = $(this).data("skilltype");
     getSkillData(charNum, skillType, true);
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
+    charChange(charNum);
+    updateDisplay();
+});
+
+// setup drive select
+$(".drive-selector").on("change", function (){
+    var charNum = $(this).data("charnum").toString();
+    var num = $(this).data("drivenum");
+    getDriveData(charNum, num, true);
     charChange(charNum);
     updateDisplay();
 });
@@ -173,7 +266,8 @@ $(".passive-selector").on("change", function (){
 // set up move type changes
 $(".move-type-selector").on("change", function() {
     var charNum = $(this).data("charnum").toString();
-    getMoveIcon((charNum === "1" ? "#move-1" : "#move-2"), this.value);
+    getMoveIcon((charNum === "1" ? "#move-icon-1" : "#move-icon-2"), this.value);
+
     charChange(charNum);
     updateDisplay();
 });
@@ -184,8 +278,14 @@ $(".weapon-type-selector").on("change", function (){
     loadWeapons(this.value, "#weapon-" + charNum, false);
     setColor(this.value, charNum);
     $("#weapon-" + charNum + " option:eq(1)").attr("selected", "selected").attr('selected', 'selected');
-    getWeaponIcon((charNum === "1" ? "#weapon-1" : "#weapon-2"), this.value);
+    getWeaponIcon((charNum === "1" ? "#weapon-icon-1" : "#weapon-icon-2"), this.value);
     showWeapon($("#weapon-" + charNum).val(), charNum, true, true);
+    updateRefinements($("#weapon-" + charNum).val(), charNum);
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
     charChange(charNum);
     updateDisplay();
 });
@@ -220,6 +320,17 @@ $("#override-weapon-type").on("change", function (){
     updateDisplay();
 });
 
+//level update
+$(".override-level-val").on("change", function() {
+    // current level cannot be greater than 40
+    if (this.value > 40) {
+        this.value = 40;
+    }
+    keepTable = false;
+
+    updateDisplay();
+});
+
 // set up color changes
 $(".color-selector").on("change", function() {
     var charNum = $(this).data("charnum").toString();
@@ -238,7 +349,7 @@ $(".color-selector").on("change", function() {
         $("#weapon-type-" + charNum).val("Bow");
     }
     $("#weapon-" + charNum + " option:eq(1)").attr("selected", "selected").attr('selected', 'selected');
-    getWeaponIcon((charNum === "1" ? "#weapon-1" : "#weapon-2"), $("#weapon-type-" + charNum).val());
+    getWeaponIcon((charNum === "1" ? "#weapon-icon-1" : "#weapon-icon-2"), $("#weapon-type-" + charNum).val());
     showWeapon($("#weapon-" + charNum).val(), charNum, true, true);
     charChange(charNum);
     updateDisplay();
@@ -274,6 +385,8 @@ $("input[type=radio][name=mode]").on("change", function() {
         $("#battle-log").stop(true, true).show(200);
         $("#matchups").stop(true, true).hide(200);
         $("#matchup-panel").stop(true, true).hide(200);
+        $("#matchup-overrides").stop(true, true).hide(200);
+        $("#matchup-filters").stop(true, true).hide(200);
 
         // enable all inputs
         enableCharPanel("1", true);
@@ -326,6 +439,21 @@ $("#matchup-filters input").on("change", function() {
 
 // override options
 $(".override-option").on("change", function() {
+    // set banes and boons
+    if ((this.id === "override-boon" && this.value !== "neutral") && $("#override-bane").val() === "neutral") {
+        $("#override-bane").val("hp");
+        if(this.value === "hp")
+            $("#override-bane").val("res");
+    }
+    if ((this.id === "override-bane" && this.value !== "neutral") && $("#override-boon").val() === "neutral") {
+        $("#override-boon").val("hp");
+        if(this.value === "hp")
+            $("#override-boon").val("res");
+    }
+    if((this.id === "override-boon" && (this.value === "neutral" || this.value === $("#override-bane").val())) || (this.id === "override-bane" && (this.value === "neutral" || this.value === $("#override-boon").val()))) {
+        $("#override-boon").val("neutral");
+        $("#override-bane").val("neutral");
+    }
     // check if boon and bane match
     if (this.id === "override-boon" && this.value === $("#override-bane").val()) {
         $("#override-bane").val("neutral");
@@ -350,6 +478,7 @@ $("#override-reset").on("click", function() {
     loadWeapons("Any", "#override-weapon", true);
     $("#override-weapon").html("<option value='No Override'>No Override</option>" + $("#override-weapon").html());
     $("#override-weapon").val("No Override").attr('selected', 'selected');
+    $("#override-refinement").val("None").attr('selected', 'selected');
 
     $("#override-passive-a").val("No Override").attr('selected', 'selected');
     $("#override-passive-b").val("No Override").attr('selected', 'selected');
@@ -358,6 +487,9 @@ $("#override-reset").on("click", function() {
     $("#override-special").val("No Override").attr('selected', 'selected');
     $("#override-spec-cooldown").val("max");
     $("#override-passive-s").val("No Override").attr('selected', 'selected');
+    $("#override-drive-1").val("None").attr('selected', 'selected');
+    $("#override-drive-2").val("None").attr('selected', 'selected');
+    $("#override-drive-3").val("None").attr('selected', 'selected');
 
     $(".override-stat").val(0);
     $("#override-curr-hp").val(100);
@@ -367,7 +499,37 @@ $("#override-reset").on("click", function() {
     $("#override-adjacent-block").hide(500);
     $("#override-adjacent").val("0");
 
+    //blessings
+    $("#override-blessing").val("None").attr('selected', 'selected');
+    $("#override-blessing2").val("None").attr('selected', 'selected');
+    $("#override-blessing3").val("None").attr('selected', 'selected');
+
+    //statuses
+    $("#override-triangle-adept-status").prop("checked", false);
+    $("#override-panic-status").prop("checked", false);
+    $("#override-candlelight-status").prop("checked", false);
+    $("#override-defensive-terrain").prop("checked", false);
+
+    //bonuses
+    $("#override-atk-bonus").val("0");
+    $("#override-spd-bonus").val("0");
+    $("#override-def-bonus").val("0");
+    $("#override-res-bonus").val("0");
+
+    //penalties
+    $("#override-atk-penalty").val("0");
+    $("#override-spd-penalty").val("0");
+    $("#override-def-penalty").val("0");
+    $("#override-res-penalty").val("0");
+
+    //spurs
+    $("#override-atk-spur").val("0");
+    $("#override-spd-spur").val("0");
+    $("#override-def-spur").val("0");
+    $("#override-res-spur").val("0");
+
     keepTable = false;
+    charChange(1);
     updateDisplay();
 });
 
@@ -375,12 +537,20 @@ $("#override-reset").on("click", function() {
 $(".build-select").on("change", function() {
     var charNum = $(this).data("charnum").toString();
 
-    // check if banes and boons match
-    if ($(this).hasClass("boon-select") && this.value === $("#bane-" + charNum).val()) {
-        $("#bane-" + charNum).val("neutral");
+    // set banes and boons
+    if (($(this).hasClass("boon-select") && this.value !== "neutral") && $("#bane-" + charNum).val() === "neutral") {
+        $("#bane-" + charNum).val("hp");
+        if(this.value === "hp")
+            $("#bane-" + charNum).val("res");
     }
-    if ($(this).hasClass("bane-select") && this.value === $("#boon-" + charNum).val()) {
+    if (($(this).hasClass("bane-select") && this.value !== "neutral") && $("#boon-" + charNum).val() === "neutral") {
+        $("#boon-" + charNum).val("hp");
+        if(this.value === "hp")
+            $("#boon-" + charNum).val("res");
+    }
+    if(($(this).hasClass("boon-select") && (this.value === "neutral" || this.value === $("#bane-" + charNum).val())) || ($(this).hasClass("bane-select") && (this.value === "neutral" || this.value === $("#boon-" + charNum).val()))) {
         $("#boon-" + charNum).val("neutral");
+        $("#bane-" + charNum).val("neutral");
     }
 
     // check if skills need to change due to rarity change
@@ -391,6 +561,13 @@ $(".build-select").on("change", function() {
     if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
         displayStatTotals(charNum);
     }
+
+    //Arena Score Calculation
+    if (charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        var points = ArenaScoreCalc(charNum);
+        $(".arena-score-" + charNum + "-read").text(points.toString());
+    }
+
     charChange(charNum);
     updateDisplay();
 });
@@ -440,7 +617,7 @@ $('button#matchup-filter-dismiss').on('click', function() {
 
 //matchup-filter-dismiss
 $('button#overrides-dismiss').on('click', function() {
-    $('#overrides').stop(true, true).hide(200)
+    $('#matchup-overrides').stop(true, true).hide(200)
 });
 
 //Reset HP
@@ -499,6 +676,7 @@ $(".draw-update").on("click", function() {
         $("#res-bonus-1").val(oldBA.attacker.resBonus);
         $("#panic-status-1").prop("checked", oldBA.attacker.status.panic);
         $("#candlelight-status-1").prop("checked", oldBA.attacker.status.candlelight);
+        $("#triangle-adept-status-1").prop("checked", oldBA.attacker.status.triangleAdept);
     }
 
     // update defender
@@ -522,6 +700,7 @@ $(".draw-update").on("click", function() {
         $("#res-bonus-2").val(oldBA.defender.resBonus);
         $("#panic-status-2").prop("checked", oldBA.defender.status.panic);
         $("#candlelight-status-2").prop("checked", oldBA.defender.status.candlelight);
+        $("#triangle-adept-status-2").prop("checked", oldBA.defender.status.triangleAdept);
     }
 
     // sim battle again

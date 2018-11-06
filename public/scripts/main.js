@@ -4,7 +4,7 @@ function customName(weaponType, moveType) {
     var name = "";
 
     // name prefix
-    if (weaponType === "Sword" || weaponType === "Axe" || weaponType === "Lance" || weaponType === "Bow") {
+    if (weaponType === "Sword" || weaponType === "Axe" || weaponType === "Lance" || weaponType === "Bow" || weaponType === "Red Bow" || weaponType === "Green Bow" || weaponType === "Blue Bow") {
         name = weaponType;
     } else if (weaponType === "Red Tome") {
         if (moveType === "Infantry") {
@@ -28,11 +28,47 @@ function customName(weaponType, moveType) {
             return "Troubadour";
         }
         name = "Staff";
+    } else if (weaponType === "Red Staff") {
+        if (moveType === "Infantry") {
+            return "Red Cleric";
+        } else if (moveType === "Cavalry") {
+            return "Red Troubadour";
+        }
+        name = "Red Staff";
+    } else if (weaponType === "Blue Staff") {
+        if (moveType === "Infantry") {
+            return "Blue Cleric";
+        } else if (moveType === "Cavalry") {
+            return "Blue Troubadour";
+        }
+        name = "Blue Staff";
+    } else if (weaponType === "Green Staff") {
+        if (moveType === "Infantry") {
+            return "Green Cleric";
+        } else if (moveType === "Cavalry") {
+            return "Green Troubadour";
+        }
+        name = "Green Staff";
     } else if (weaponType === "Dagger") {
         if (moveType === "Infantry") {
             return "Thief";
         }
-        name = "Dagger";
+        name = weaponType;
+    } else if (weaponType === "Red Dagger") {
+        if (moveType === "Infantry") {
+            return "Red Thief";
+        }
+        name = weaponType;
+    } else if (weaponType === "Blue Dagger") {
+        if (moveType === "Infantry") {
+            return "Blue Thief";
+        }
+        name = weaponType;
+    } else if (weaponType === "Green Dagger") {
+        if (moveType === "Infantry") {
+            return "Green Thief";
+        }
+        name = weaponType;
     } else if (weaponType === "Red Breath") {
         if (moveType === "Infantry") {
             return "Red Dragon";
@@ -71,11 +107,11 @@ function customName(weaponType, moveType) {
 // given a weapon type, return its color
 function weaponToColor(weaponType) {
 
-    if (weaponType === "Sword" || weaponType === "Red Tome" || weaponType === "Red Breath") {
+    if (weaponType === "Sword" || weaponType === "Red Tome" || weaponType === "Red Breath" || weaponType === "Red Bow" || weaponType === "Red Dagger" || weaponType === "Red Staff") {
         return "Red";
-    } else if (weaponType === "Axe" || weaponType === "Green Tome" || weaponType === "Green Breath") {
+    } else if (weaponType === "Axe" || weaponType === "Green Tome" || weaponType === "Green Breath" || weaponType === "Green Bow" || weaponType === "Green Dagger" || weaponType === "Green Staff") {
         return "Green";
-    } else if (weaponType === "Lance" || weaponType === "Blue Tome" || weaponType === "Blue Breath") {
+    } else if (weaponType === "Lance" || weaponType === "Blue Tome" || weaponType === "Blue Breath" || weaponType === "Blue Bow" || weaponType === "Blue Dagger" || weaponType === "Blue Staff") {
         return "Blue";
     }
 
@@ -86,7 +122,7 @@ function weaponToColor(weaponType) {
 function weaponTypeRange(weaponType) {
 
     var range = 1;
-    if (weaponType === "Red Tome" || weaponType === "Green Tome" || weaponType === "Blue Tome" || weaponType === "Bow" || weaponType === "Dagger" || weaponType === "Staff") {
+    if (weaponType === "Red Tome" || weaponType === "Green Tome" || weaponType === "Blue Tome" || weaponType === "Bow" || weaponType === "Red Bow" || weaponType === "Green Bow" || weaponType === "Blue Bow" || weaponType === "Red Dagger" || weaponType === "Green Dagger" || weaponType === "Blue Dagger" || weaponType === "Dagger" || weaponType === "Red Staff" || weaponType === "Blue Staff" || weaponType === "Green Staff" || weaponType === "Staff") {
         range = 2;
     }
 
@@ -96,7 +132,7 @@ function weaponTypeRange(weaponType) {
 // given a weapon type, return its damage type
 function weaponTypeMagical(weaponType) {
 
-    var physicalWeapons = {"Sword":true, "Axe":true, "Lance":true, "Bow":true, "Dagger":true};
+    var physicalWeapons = {"Sword":true, "Axe":true, "Lance":true, "Bow":true, "Red Bow":true, "Green Bow":true, "Blue Bow":true, "Dagger":true, "Red Dagger":true, "Green Dagger":true, "Blue Dagger":true};
     return physicalWeapons.hasOwnProperty(weaponType) ? "Physical" : "Magical";
 }
 
@@ -110,12 +146,13 @@ function isInheritable(skill, charName) {
     var range = weaponTypeRange(weaponType);
 
     var dragon = false;
-    if (weaponType === "Red Breath" || weaponType === "Green Breath" || weaponType === "Blue Breath" || weaponType === "Breath") {
+    if (weaponType === "Red Breath" || weaponType === "Green Breath" || weaponType === "Blue Breath" || weaponType === "Colorless Breath" ||weaponType === "Breath") {
         dragon = true;
     }
 
     return (!skill.char_unique &&
            (!skill.hasOwnProperty("move_unique") || skill.move_unique === moveType) &&
+           (!skill.hasOwnProperty("color_unique") || skill.color_unique === color) &&
            (!skill.hasOwnProperty("color_restrict") || skill.color_restrict !== color) &&
            (!skill.hasOwnProperty("range_unique") || skill.range_unique === range) &&
            (!skill.hasOwnProperty("weapon_restrict") || skill.weapon_restrict !== weaponType) &&
@@ -132,6 +169,12 @@ function isInheritableWeapon(weapon, charName) {
     }
     if (weaponType.indexOf("Bow") !== -1) {
         weaponType = "Bow";
+    }
+    if (weaponType.indexOf("Staff") !== -1) {
+        weaponType = "Staff";
+    }
+    if (weaponType.indexOf("Dagger") !== -1) {
+        weaponType = "Dagger";
     }
 
     return !weapon.char_unique && weapon.type === weaponType;
@@ -312,6 +355,50 @@ function showSkills(singleChar, charNum, type) {
     getSkillData(charNum, type, false);
 }
 
+// gets drive data and stores it
+// charNum determines which panel to display it in, driveNum is the number of the drive, update is true if stats need to be adjusted
+function getDriveData(charNum, driveNum, update) {
+
+    var selectID = "#drive-" + driveNum + "-" + charNum;
+    var driveName = $(selectID).val();
+
+    if (driveInfo.hasOwnProperty(driveName)) {
+        if (update) {
+            updateStatTotal(selectID, charNum, false);
+            $(selectID).data("info", driveInfo[driveName]);
+            updateStatTotal(selectID, charNum, true);
+        } else {
+            $(selectID).data("info", driveInfo[driveName]);
+        }
+    } else {    // no skill
+        if (update) {
+            updateStatTotal(selectID, charNum, false);
+        }
+
+        $(selectID).data("info", {});
+    }
+}
+
+// displays passive skills
+// singleChar contains the data for a single character, charNum determines which panel to display on, driveNum is the drive's number
+function showDrives(singleChar, charNum, driveNum) {
+
+    var drives = "<option value=\"None\">None</option>";
+    var selectedDrive = "None";
+
+    // get drives
+    for (var key in driveInfo) {
+        drives += "<option value=\"" + key + "\">" + driveInfo[key].name + "</option>";
+    }
+
+    // set value
+    $("#drive-" + driveNum + "-" + charNum).html(drives);
+    $("#drive-" + driveNum + "-" + charNum).val(selectedDrive).attr('selected', 'selected'); //.trigger("change.select2");
+
+    // store drive data
+    getDriveData(charNum, driveNum, false);
+}
+
 // shows extra weapon info
 // selectedWeapon is the weapon to display, charNum determines the panel, showHidden is true if we need to show or hide anything
 // set update to true to update the character's atk value
@@ -398,6 +485,9 @@ function updateRefinements(selectedWeapon, charNum)
     // set values
     $("#refinement-" + charNum).html(refinements);
     $("#refinement-" + charNum).val(selectedRefinement).attr('selected', 'selected');
+    if (!charInfo[$("#char-" + charNum).val()].hasOwnProperty("base_stat")) {
+        displayRefinement(charNum);
+    }
 }
 
 // show special cooldown values
@@ -457,6 +547,17 @@ function loadPassives(letter, selectID, unique) {
     $(selectID).html(options);
 }
 
+// load all drive skills
+// selectID determines which select to load in
+function loadDrives(selectID) {
+
+    var options = "<option value='None'>None</option>";
+    for (var key in driveInfo) {
+        options += "<option value=\"" + key + "\">" + driveInfo[key].name + "</option>";
+    }
+    $(selectID).html(options);
+}
+
 // load all assist skills
 // selectID determines which select to load in, unique is true if we include unique assists
 function loadAssists(selectID, unique) {
@@ -485,11 +586,11 @@ function loadSpecials(selectID) {
 // weaponType is the type of weapon, charNum determines which panel to display in
 function setColor(weaponType, charNum) {
 
-    if (weaponType === "Sword" || weaponType === "Red Tome" || weaponType === "Red Breath") {
+    if (weaponType === "Sword" || weaponType === "Red Tome" || weaponType === "Red Breath" || weaponType === "Red Bow" || weaponType === "Red Dagger" || weaponType === "Red Staff") {
         $("#color-" + charNum).val("Red");
-    } else if (weaponType === "Axe" || weaponType === "Green Tome" || weaponType === "Green Breath") {
+    } else if (weaponType === "Axe" || weaponType === "Green Tome" || weaponType === "Green Breath" || weaponType === "Green Bow" || weaponType === "Green Dagger" || weaponType === "Green Staff") {
         $("#color-" + charNum).val("Green");
-    } else if (weaponType === "Lance" || weaponType === "Blue Tome" || weaponType === "Blue Breath") {
+    } else if (weaponType === "Lance" || weaponType === "Blue Tome" || weaponType === "Blue Breath" || weaponType === "Blue Bow" || weaponType === "Blue Dagger" || weaponType === "Blue Staff") {
         $("#color-" + charNum).val("Blue");
     } else {
         $("#color-" + charNum).val("Colorless");
@@ -538,7 +639,7 @@ function applyStatMods(stats, skillName, dataInfo) {
 
 // applies any stat modifiers to the given stats and returns the resulting stats
 // stats contain the character's stats, skillName is the skill to check for stat mods, dataInfo contains the info for the given skill
-function applyStatModsRef(stats, refinement, type, weapon) {
+function applyStatModsRef(stats, refinement, type, weapon, increment) {
     if(refinement!="None" && weapon.hasOwnProperty("refinable"))
     {
         var tmp;
@@ -548,7 +649,10 @@ function applyStatModsRef(stats, refinement, type, weapon) {
             tmp=refinementsInfo[type][refinement];
         if (tmp.hasOwnProperty("stat_mod")) {
             for (var key in tmp.stat_mod) {
-                stats[key] += tmp.stat_mod[key];
+                if(increment)
+                    stats[key] += tmp.stat_mod[key];
+                else
+                    stats[key] -= tmp.stat_mod[key];
                 if (stats[key] < 0) {
                     stats[key] = 0;
                 } else if (stats[key] > 99) {
@@ -558,7 +662,10 @@ function applyStatModsRef(stats, refinement, type, weapon) {
         }
         if (weapon.refinable.hasOwnProperty("stat_mod")) {
             for (var key in weapon.refinable.stat_mod) {
-                stats[key] += weapon.refinable.stat_mod[key];
+                if(increment)
+                    stats[key] += weapon.refinable.stat_mod[key];
+                else
+                    stats[key] -= weapon.refinable.stat_mod[key];
                 if (stats[key] < 0) {
                     stats[key] = 0;
                 } else if (stats[key] > 99) {
@@ -616,7 +723,7 @@ function getAllStatsBasedOn5Star(rarity, charName, statsBases)
 function getBaseStat(stats, rarity, charName, boon, bane)
 {
 	var statsBases={};
-	statBases=getAllStatsBasedOn5Star(rarity, charName, statsBases)
+	statBases=getAllStatsBasedOn5Star(rarity, charName, statsBases);
     var statNames = ["hp", "atk", "spd", "def", "res"];
 	statNames.forEach(function(key)
 	{
@@ -629,22 +736,41 @@ function getBaseStat(stats, rarity, charName, boon, bane)
 // charName is the name of the character, weaponName is the equipped weapon, passiveA is the equipped passive a skill
 // rarity is the rarity of the character, level is the level of the character, merge is the number of units merged with the given one
 // boon is the boon stat, bane is the bane stat
-function getStatTotals(charName, weaponName, passiveA, seal, rarity, level, merge, boon, bane, summonerSupport, allySupport, refinement, blessing) {
+function getStatTotals(charName, weaponName, passiveA, seal, rarity, level, merge, boon, bane, summonerSupport, allySupport, refinement, blessing, blessing2, blessing3) {
 
     // base stats + boons/banes
     var stats = {};
-	stats=getBaseStat(stats, rarity, charName, boon, bane);
+    
+
+    //Fix issue with even rarities and merges
+    var statsbase = {};
+    statsbase = getAllStatsBasedOn5Star(5, charName, statsbase);
+
+    if(level !== 40)
+        stats=getStatTable(level, statsbase, charInfo[charName].base_stat.growth, rarity, charInfo[charName].base_stat.growth_type, boon, bane, charName);
+    else {
+        stats.hp = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.hp + ((boon === "hp") ? 5 : 0) + ((bane === "hp") ? -5 : 0)), false), false) + statsbase.hp + ((boon === "hp") ? 1 : 0) + ((bane === "hp") ? -1 : 0);
+        stats.atk = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.atk + ((boon === "atk") ? 5 : 0) + ((bane === "atk") ? -5 : 0)), false), false) + statsbase.atk + ((boon === "atk") ? 1 : 0) + ((bane === "atk") ? -1 : 0);
+        stats.spd = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.spd + ((boon === "spd") ? 5 : 0) + ((bane === "spd") ? -5 : 0)), false), false) + statsbase.spd + ((boon === "spd") ? 1 : 0) + ((bane === "spd") ? -1 : 0);
+        stats.def = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.def + ((boon === "def") ? 5 : 0) + ((bane === "def") ? -5 : 0)), false), false) + statsbase.def + ((boon === "def") ? 1 : 0) + ((bane === "def") ? -1 : 0);
+        stats.res = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.res + ((boon === "res") ? 5 : 0) + ((bane === "res") ? -5 : 0)), false), false) + statsbase.res + ((boon === "res") ? 1 : 0) + ((bane === "res") ? -1 : 0);
+    }
+
+    const statNames = ["hp", "atk", "spd", "def", "res"];
+    statNames.forEach(function(key)
+    {
+        statsbase[key]=statsbase[key] + ((boon === key) ? 1 : 0) + ((bane === key) ? -1 : 0);
+    });
 
     // merged units
     if (merge > 0) {
-        var statNames = ["hp", "atk", "spd", "def", "res"];
         var mergeBonusOrder = ["hp", "atk", "spd", "def", "res"];
 
-        // sort stats from highest to lowest with insertion sort haha
+        // sort statsbase from highest to lowest with insertion sort haha
         for (var statsIndex = 1; statsIndex < 5; statsIndex++) {
             var inserted = false;
             for (var orderIndex = 0; orderIndex < statsIndex; orderIndex++) {
-                if (stats[statNames[statsIndex]] > stats[mergeBonusOrder[orderIndex]]) {
+                if (statsbase[statNames[statsIndex]] > statsbase[mergeBonusOrder[orderIndex]]) {
                     // push back
                     for (var pushIndex = statsIndex - 1; pushIndex >= orderIndex; pushIndex--) {
                         mergeBonusOrder[pushIndex + 1] = mergeBonusOrder[pushIndex];
@@ -672,15 +798,6 @@ function getStatTotals(charName, weaponName, passiveA, seal, rarity, level, merg
         }
     }
 
-    // apply stat growths
-    if (level === 40) {
-        stats.hp += statGrowths[rarity-1][charInfo[charName].base_stat.growth.hp + ((boon === "hp") ? 1 : 0) + ((bane === "hp") ? -1 : 0)];
-        stats.atk += statGrowths[rarity-1][charInfo[charName].base_stat.growth.atk + ((boon === "atk") ? 1 : 0) + ((bane === "atk") ? -1 : 0)];
-        stats.spd += statGrowths[rarity-1][charInfo[charName].base_stat.growth.spd + ((boon === "spd") ? 1 : 0) + ((bane === "spd") ? -1 : 0)];
-        stats.def += statGrowths[rarity-1][charInfo[charName].base_stat.growth.def + ((boon === "def") ? 1 : 0) + ((bane === "def") ? -1 : 0)];
-        stats.res += statGrowths[rarity-1][charInfo[charName].base_stat.growth.res + ((boon === "res") ? 1 : 0) + ((bane === "res") ? -1 : 0)];
-    }
-
     // add weapon might
     stats.atk += ((weaponName !== "None"))? weaponInfo[weaponName].might : 0;
 
@@ -695,8 +812,10 @@ function getStatTotals(charName, weaponName, passiveA, seal, rarity, level, merg
     stats = applyStatMods(stats, passiveA, skillInfo.a);
     stats = applyStatMods(stats, seal, skillInfo.s);
     stats = applyStatMods(stats, blessing, blessingsInfo);
+    stats = applyStatMods(stats, blessing2, blessingsInfo);
+    stats = applyStatMods(stats, blessing3, blessingsInfo);
 	if(refinement!="None" && weaponName!="None" && weaponInfo[weaponName].hasOwnProperty("refinable"))
-        stats = applyStatModsRef(stats, refinement, weaponInfo[weaponName].refinable.type, weaponInfo[weaponName]);
+        stats = applyStatModsRef(stats, refinement, weaponInfo[weaponName].refinable.type, weaponInfo[weaponName], true);
 
     //Apply support bonuses
     if (summonerSupport !== '') {
@@ -714,13 +833,14 @@ function getStatTotals(charName, weaponName, passiveA, seal, rarity, level, merg
 // charNum determines the character panel
 function displayStatTotals(charNum) {
 
-
     // get info
     var charName = $("#char-" + charNum).val();
     var weaponName = $("#weapon-" + charNum).val();
     var passiveA = $("#passive-a-" + charNum).val();
     var refinement = $("#refinement-" + charNum).val();
     var blessing = $("#blessing-" + charNum).val();
+    var blessing2 = $("#blessing2-" + charNum).val();
+    var blessing3 = $("#blessing3-" + charNum).val();
     var seal = $("#passive-s-" + charNum).val();
     var rarity = parseInt($("#rarity-" + charNum).val());
     var level = parseInt($("#level-" + charNum).val());
@@ -731,7 +851,7 @@ function displayStatTotals(charNum) {
     var allySupport = $('#ally-support-' + charNum).val();
 
     // get stats
-    var stats = getStatTotals(charName, weaponName, passiveA, seal, rarity, level, merge, boon, bane, summonerSupport, allySupport, refinement, blessing);
+    var stats = getStatTotals(charName, weaponName, passiveA, seal, rarity, level, merge, boon, bane, summonerSupport, allySupport, refinement, blessing, blessing2, blessing3);
 
     // display stats
     $("#hp-" + charNum + ", #curr-hp-" + charNum).val(stats.hp);
@@ -742,6 +862,123 @@ function displayStatTotals(charNum) {
     $("#res-" + charNum).val(stats.res);
     $('#summoner-support-' + charNum).val(summonerSupport);
     $('#ally-support-' + charNum).val(allySupport);
+}
+
+// displays stat totals for refinements with Custom units
+// charNum determines the character panel
+function displayRefinement(charNum) {
+
+    // get info
+    var charName = $("#char-" + charNum).val();
+    var weaponName = $("#weapon-" + charNum).val();
+    var refinement = $("#refinement-" + charNum).val();
+	var stats = {};
+	var statNames = ["hp", "atk", "spd", "def", "res"];
+    stats[statNames[0]] = parseInt($("#hp-" + charNum).val(), 10);
+    stats[statNames[1]] = parseInt($("#atk-" + charNum).val(), 10);
+    stats[statNames[2]] = parseInt($("#spd-" + charNum).val(), 10);
+    stats[statNames[3]] = parseInt($("#def-" + charNum).val(), 10);
+    stats[statNames[4]] = parseInt($("#res-" + charNum).val(), 10);
+    if(prevRefinements[charNum-1] !== "None")
+        stats = applyStatModsRef(stats, prevRefinements[charNum-1], weaponInfo[prevWeapons[charNum-1]].refinable.type, weaponInfo[prevWeapons[charNum-1]], false);
+    if(refinement !== "None" && weaponInfo[weaponName].hasOwnProperty("refinable"))
+        stats = applyStatModsRef(stats, refinement, weaponInfo[weaponName].refinable.type, weaponInfo[weaponName], true);
+    $("#hp-" + charNum + ", #curr-hp-" + charNum).val(stats.hp);
+    $(".hp-" + charNum + "-read").text(stats.hp);
+    $("#atk-" + charNum).val(stats.atk);
+    $("#spd-" + charNum).val(stats.spd);
+    $("#def-" + charNum).val(stats.def);
+    $("#res-" + charNum).val(stats.res);
+    prevRefinements[charNum-1] = refinement;
+    prevWeapons[charNum-1] = weaponName;
+}
+
+function SpecialBSTCheck(BST, rarity, level, passiveA)
+{
+    if(passiveA === "None")
+        return BST;
+    var checking =  skillInfo.a[passiveA].differentBST;
+    if(!checking)
+        return BST;
+    if((checking.rarity != rarity) || (checking.level != level))
+        return BST;
+    if(checking.newBST > BST)
+        return checking.newBST;
+	return BST;
+}
+
+//Get the sp of each skill/weapon
+function getSp(skillName, dataInfo)
+{
+    if(skillName !== "None" && dataInfo[skillName].hasOwnProperty("sp"))
+        return dataInfo[skillName].sp;
+    return 0;
+}
+
+//Get the arena score for this character
+function ArenaScoreCalc(charNum) {
+
+    // get info
+    var charName = $("#char-" + charNum).val();
+    var weaponName = $("#weapon-" + charNum).val();
+    var refinement = $("#refinement-" + charNum).val();
+    var special = $("#special-" + charNum).val();
+    var assist = $("#assist-" + charNum).val();
+    var passiveA = $("#passive-a-" + charNum).val();
+    var passiveB = $("#passive-b-" + charNum).val();
+    var passiveC = $("#passive-c-" + charNum).val();
+    var seal = $("#passive-s-" + charNum).val();
+    var blessing = $("#blessing-" + charNum).val();
+    var blessing2 = $("#blessing2-" + charNum).val();
+    var blessing3 = $("#blessing3-" + charNum).val();
+    var boon = $("#boon-" + charNum).val();
+    var bane = $("#bane-" + charNum).val();
+    var rarity = parseInt($("#rarity-" + charNum).val());
+    var level = parseInt($("#level-" + charNum).val());
+    var merge = parseInt($("#merge-" + charNum).val());
+
+    var BST = 0;
+    var Sp = 0;
+    var weapSp = 0;
+
+    if (charInfo[charName].hasOwnProperty("base_stat")){
+        var tmpstats = {};
+        var statsbase = {};
+	    statsbase=getBaseStat(statsbase, 5, charName, "neutral", "neutral");
+
+        if(level !== 40)
+            tmpstats=getStatTable(level, statsbase, charInfo[charName].base_stat.growth, rarity, charInfo[charName].base_stat.growth_type, boon, bane, charName);
+        else {
+            tmpstats.hp = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.hp + ((boon === "hp") ? 5 : 0) + ((bane === "hp") ? -5 : 0)), false), false) + statsbase.hp + ((boon === "hp") ? 1 : 0) + ((bane === "hp") ? -1 : 0);
+            tmpstats.atk = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.atk + ((boon === "atk") ? 5 : 0) + ((bane === "atk") ? -5 : 0)), false), false) + statsbase.atk + ((boon === "atk") ? 1 : 0) + ((bane === "atk") ? -1 : 0);
+            tmpstats.spd = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.spd + ((boon === "spd") ? 5 : 0) + ((bane === "spd") ? -5 : 0)), false), false) + statsbase.spd + ((boon === "spd") ? 1 : 0) + ((bane === "spd") ? -1 : 0);
+            tmpstats.def = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.def + ((boon === "def") ? 5 : 0) + ((bane === "def") ? -5 : 0)), false), false) + statsbase.def + ((boon === "def") ? 1 : 0) + ((bane === "def") ? -1 : 0);
+            tmpstats.res = roundNum(0.39 * roundNum((0.79 + (0.07 * rarity)) * (charInfo[charName].base_stat.growth.res + ((boon === "res") ? 5 : 0) + ((bane === "res") ? -5 : 0)), false), false) + statsbase.res + ((boon === "res") ? 1 : 0) + ((bane === "res") ? -1 : 0);
+        }
+
+        BST = tmpstats.hp + tmpstats.atk + tmpstats.spd + tmpstats.def + tmpstats.res;
+        BST = SpecialBSTCheck(BST, rarity, level, passiveA);
+    }
+
+    weapSp = getSp(weaponName, weaponInfo);
+    Sp += weapSp;
+    if(refinement !== "None" && weapSp == 300)
+	    Sp += 50;
+    Sp += getSp(assist, assistInfo);
+    Sp += getSp(special, specialInfo);
+    Sp += getSp(passiveA, skillInfo.a);
+    Sp += getSp(passiveB, skillInfo.b);
+    Sp += getSp(passiveC, skillInfo.c);
+    Sp += getSp(seal, skillInfo.s);
+
+    var blessNum=0;
+    if(blessing !== "None")
+        blessNum += 1;
+    if(blessing2 !== "None")
+        blessNum += 1;
+    if(blessing3 !== "None")
+        blessNum += 1;
+    return 2 * (150 + rarityBaseValue[rarity-1] + (roundNum(level * (rarityLevelFactor[rarity-1]/39), false)) + merge*2 + roundNum(Sp/100, false) + roundNum(BST/5, false) + 4*blessNum);
 }
 
 // determines if the attacker has triangle advantage
@@ -847,10 +1084,23 @@ function statWord(stat) {
 
 // handles atk bonus from -blade tomes
 // battleInfo contains all battle information, bonusAtk is the total amount of bonuses to add to atk, charToUse is either "attacker" or "defender"
-function bladeTomeBonus(battleInfo, bonusAtk, charToUse, source) {
-
-    battleInfo[charToUse].atk += bonusAtk;
-    battleInfo.logMsg += "<li class='battle-interaction'><span class='" + charToUse + "'>" + battleInfo[charToUse].display + "</span> adds total " + source + " to attack, increasing attack by " + bonusAtk.toString() + " [" + battleInfo[charToUse].weaponData.name + "].</li>";
+function bladeTomeBonus(battleInfo, increasedStats, charToUse, source) {
+    var stats = battleInfo[charToUse].weaponData.add_changes.stats;
+    var tmpstat;
+    var total = 0;
+    var mult = battleInfo[charToUse].weaponData.add_changes.multiplier === 1.0 ? "" : (battleInfo[charToUse].weaponData.add_changes.multiplier * 100).toString() + "% of ";
+    battleInfo.logMsg += "<li class='battle-interaction'><span class='" + charToUse + "'>" + battleInfo[charToUse].display + "</span> adds " + mult + "total " + source +	" to ";
+    stats.forEach(function(stat) {
+        battleInfo[charToUse][stat] += increasedStats[stat];
+        battleInfo.logMsg += statWord(stat) + ", ";
+        tmpstat = stat;
+        total++;
+    });
+	var multipleStats = " ";
+    if(total > 1)
+        multipleStats = "s ";
+	battleInfo.logMsg += " increasing said statistic" + multipleStats;
+    battleInfo.logMsg += battleInfo[charToUse].weaponData.add_changes.hasOwnProperty("individual") ? " [" + battleInfo[charToUse].weaponData.name + "].</li>" : "by " + increasedStats[tmpstat].toString() + " [" + battleInfo[charToUse].weaponData.name + "].</li>";
     return battleInfo;
 }
 
@@ -984,7 +1234,8 @@ function getCharPanelData(charNum) {
 
     charData.status = {
         "candlelight": $("#candlelight-status-" + charNum).is(":checked"),
-        "panic": $("#panic-status-" + charNum).is(":checked")
+        "panic": $("#panic-status-" + charNum).is(":checked"),
+        "triangleAdept": $("#triangle-adept-status-" + charNum).is(":checked")
     };
 
     if ($("#defensive-terrain-" + charNum).is(":checked")) {
@@ -1000,6 +1251,12 @@ function getCharPanelData(charNum) {
     charData.passiveAData = $("#passive-a-" + charNum).data("info");
     charData.passiveBData = $("#passive-b-" + charNum).data("info");
     charData.passiveCData = $("#passive-c-" + charNum).data("info");
+    charData.drive1 = $("#drive-1-" + charNum).val();
+    charData.drive2 = $("#drive-2-" + charNum).val();
+    charData.drive3 = $("#drive-3-" + charNum).val();
+    charData.drive1Data = $("#drive-1-" + charNum).data("info");
+    charData.drive2Data = $("#drive-2-" + charNum).data("info");
+    charData.drive3Data = $("#drive-3-" + charNum).data("info");
     charData.special = $("#special-" + charNum).val();
 	charData.refinement = $("#refinement-" + charNum).val();
     charData.specCurrCooldown = parseInt($("#spec-cooldown-" + charNum).val());
@@ -1099,7 +1356,8 @@ function getDefaultCharData(charName) {
 
     charData.status = {
         "candlelight": $("#override-candlelight-status").is(":checked"),
-        "panic": $("#override-panic-status").is(":checked")
+        "panic": $("#override-panic-status").is(":checked"),
+        "triangleAdept": $("#override-triangle-adept-status").is(":checked")
     };
 
     if ($("#override-defensive-terrain").is(":checked")) {
@@ -1137,8 +1395,16 @@ function getDefaultCharData(charName) {
     charData.specialData = (charInfo[charName].hasOwnProperty("special") && specialIndex >= 0) ? specialInfo[charData.special] : {};
     charData.seal = "None";
     charData.sealData = {};
+    charData.drive1 = "None";
+    charData.drive1Data = {};
+    charData.drive2 = "None";
+    charData.drive2Data = {};
+    charData.drive3 = "None";
+    charData.drive3Data = {};
     charData.refinement="None";
     charData.blessing="None";
+    charData.blessing2="None";
+    charData.blessing3="None";
 
     // override refinement, only if possible
     var tmpRef=$("#override-refinement").val();
@@ -1153,6 +1419,18 @@ function getDefaultCharData(charName) {
         if(!charInfo[charName].hasOwnProperty("legendary"))
         {
             charData.blessing= $("#override-blessing").val();
+        }
+    }
+    if ($("#override-blessing2").val() !== "None") {
+        if(!charInfo[charName].hasOwnProperty("legendary"))
+        {
+            charData.blessing2= $("#override-blessing2").val();
+        }
+    }
+    if ($("#override-blessing3").val() !== "None") {
+        if(!charInfo[charName].hasOwnProperty("legendary"))
+        {
+            charData.blessing3= $("#override-blessing3").val();
         }
     }
 
@@ -1189,6 +1467,20 @@ function getDefaultCharData(charName) {
     if ($("#override-passive-s").val() !== "No Override" && $("#override-passive-s").val() !== "None") {
         charData.seal = $("#override-passive-s").val();
         charData.sealData = skillInfo.s[$("#override-passive-s").val()];
+    }
+
+    // override drives
+    if ($("#override-drive-1").val() !== "No Override" && $("#override-drive-1").val() !== "None") {
+        charData.drive1 = $("#override-drive-1").val();
+        charData.drive1Data = driveInfo[$("#override-drive-1").val()];
+    }
+    if ($("#override-drive-2").val() !== "No Override" && $("#override-drive-2").val() !== "None") {
+        charData.drive2 = $("#override-drive-2").val();
+        charData.drive2Data = driveInfo[$("#override-drive-2").val()];
+    }
+    if ($("#override-drive-3").val() !== "No Override" && $("#override-drive-3").val() !== "None") {
+        charData.drive3 = $("#override-drive-3").val();
+        charData.drive3Data = driveInfo[$("#override-drive-3").val()];
     }
 
     // override assist
@@ -1233,7 +1525,7 @@ function getDefaultCharData(charName) {
     // show stats, panic is always there, so this was REALLY bugged
     var panicMod = charData.status.panic ? -1 : 1;
     if (charInfo[charName].hasOwnProperty("base_stat")) {
-        var stats = getStatTotals(charName, charData.weaponName, charData.passiveA, charData.seal, rarity, level, merge, boon, bane, charData.summonerSupport, charData.allySupport, charData.refinement, charData.blessing);
+        var stats = getStatTotals(charName, charData.weaponName, charData.passiveA, charData.seal, rarity, level, merge, boon, bane, charData.summonerSupport, charData.allySupport, charData.refinement, charData.blessing, charData.blessing2, charData.blessing3);
 
         charData.currHP = stats.hp;
         charData.initHP = stats.hp;
@@ -1357,7 +1649,7 @@ function canActivateVantage(container, initHP, maxHP) {
 // container contains the skill info, initHP is the hp of the character, maxHP is the max hp of the character
 function canActivateDesperation(container, initHP, maxHP) {
 
-    return container.hasOwnProperty("desperation") && initHP <= checkRoundError(container.desperation.threshold * maxHP);
+    return (container.hasOwnProperty("desperation") && ((container.desperation.hasOwnProperty("threshold") && initHP <= checkRoundError(container.desperation.threshold * maxHP)) ||  (container.desperation.hasOwnProperty("limit") && initHP >= checkRoundError(container.desperation.limit * maxHP))));
 }
 
 // checks if a unit can activate guard ability
@@ -1460,6 +1752,12 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
         } else if (defender.weaponData.hasOwnProperty("tri_advantage")) {
             atkMod += 0.2;
             battleInfo.logMsg += "Opponent's weapon triangle affinity granted by skills boosts attack by another 20% [" + weaponInfo[defender.weaponName].name + "]. ";
+        } else if (attacker.status.triangleAdept) {
+            atkMod += 0.2;
+            battleInfo.logMsg += "Weapon triangle affinity granted by " + attacker.display + "'s status boosts attack by another 20%. ";
+        } else if (defender.status.triangleAdept) {
+            atkMod += 0.2;
+            battleInfo.logMsg += "Opponent's weapon triangle affinity granted by " + defender.display + "'s status boosts attack by another 20%. ";
         } else if (attacker.passiveAData.hasOwnProperty("tri_advantage")) {
             atkMod += attacker.passiveAData.tri_advantage;
             battleInfo.logMsg += "Weapon triangle affinity granted by skills boosts attack by another " + (attacker.passiveAData.tri_advantage * 100).toString() + "% [" + skillInfo['a'][attacker.passiveA].name + "]. ";
@@ -1480,6 +1778,12 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
         } else if (defender.weaponData.hasOwnProperty("tri_advantage")) {
             atkMod -= 0.2;
             battleInfo.logMsg += "Opponent's weapon triangle affinity granted by skills reduces attack by another 20% [" + weaponInfo[defender.weaponName].name + "]. ";
+        } else if (attacker.status.triangleAdept) {
+            atkMod -= 0.2;
+            battleInfo.logMsg += "Weapon triangle affinity granted by " + attacker.display + "'s status reduces attack by another 20%. ";
+        } else if (defender.status.triangleAdept) {
+            atkMod -= 0.2;
+            battleInfo.logMsg += "Opponent's weapon triangle affinity granted by " + defender.display + "'s status reduces attack by another 20%. ";
         } else if (attacker.passiveAData.hasOwnProperty("tri_advantage")) {
             atkMod -= attacker.passiveAData.tri_advantage;
             battleInfo.logMsg += "Weapon triangle affinity granted by skills reduces attack by another " + (attacker.passiveAData.tri_advantage * 100).toString() + "% [" + skillInfo['a'][attacker.passiveA].name + "]. ";
@@ -1558,7 +1862,7 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
     dmg = Math.max(dmg, 0);
 
     // halve staff damage
-    if (attacker.type === "Staff") {
+    if (attacker.type.indexOf("Staff") !== -1) {
         if (attacker.passiveBData.hasOwnProperty("reg_weapon_dmg") && attacker.initHP >= roundNum(attacker.hp * attacker.passiveBData.reg_weapon_dmg, true)) {
             battleInfo.logMsg += "Staff damage is not halved [" + skillInfo['b'][attacker.passiveB].name + "]. ";
         } else if (attacker.weaponData.hasOwnProperty("reg_weapon_dmg") && attacker.initHP >= roundNum(attacker.hp * attacker.weaponData.reg_weapon_dmg, true)) {
@@ -1567,6 +1871,13 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
         else{
             dmg = roundNum(dmg / 2, false);
         }
+    }
+
+    // check for damage multiplier
+    if (attacker.specialData.hasOwnProperty("dmg_mod") && attacker.specCurrCooldown <= 0) {
+        dmg += roundNum(dmg * attacker.specialData.dmg_mod, false);
+        battleInfo.logMsg += "Damage boosted by " + (attacker.specialData.dmg_mod * 100).toString() + "% [" + specialInfo[attacker.special].name + "]. ";
+        atkSpec = true;
     }
 
     //Light Brand's check
@@ -1578,7 +1889,7 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
         }
     }
 
-    //Light Brand's check
+    //Guga Excalibur &co's check
     if(attacker.weaponData.hasOwnProperty("boost_by_difference"))
     {
         var result;
@@ -1590,13 +1901,6 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
             dmg += roundNum(Math.min(result * attacker.weaponData.boost_by_difference.multiplier, attacker.weaponData.boost_by_difference.maximum), false);
             battleInfo.logMsg += "Damage boosted by " + roundNum(Math.min(result * attacker.weaponData.boost_by_difference.multiplier, attacker.weaponData.boost_by_difference.maximum), false).toString() + " [" + attacker.weaponData.name + "]. ";
         }
-    }
-
-    // check for damage multiplier
-    if (attacker.specialData.hasOwnProperty("dmg_mod") && attacker.specCurrCooldown <= 0) {
-        dmg += roundNum(dmg * attacker.specialData.dmg_mod, false);
-        battleInfo.logMsg += "Damage boosted by " + (attacker.specialData.dmg_mod * 100).toString() + "% [" + specialInfo[attacker.special].name + "]. ";
-        atkSpec = true;
     }
 
     battleInfo.extra_heal_dmg=0;
@@ -1617,7 +1921,7 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
     }//Desperation or brave problems
 
     var beforemi = battleInfo.mirroringdmg;
-
+    battleInfo.reduction = 1;
     // percentage damage reduction from defender
     if (defender.specialData.hasOwnProperty("reduce_dmg") && defender.specCurrCooldown <= 0 && defender.specialData.reduce_dmg.range === battleInfo.atkRange) {
 
@@ -1625,38 +1929,33 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
             battleInfo.mirroringdmg += dmg; //If it can, let's store the initial dmg
             beforemi = 0;
         }
-        dmg -= roundNum(dmg * defender.specialData.reduce_dmg.dmg_mod, false);
+        battleInfo.reduction *= (1 - defender.specialData.reduce_dmg.dmg_mod);
         battleInfo.logMsg += "Opponent reduces damage inflicted from ";
         if (battleInfo.atkRange === 1) {
             battleInfo.logMsg += "adjacent attacks ";
         } else {
             battleInfo.logMsg += battleInfo.atkRange.toString() + " spaces away ";
         }
-        battleInfo.logMsg += "by " + (defender.specialData.reduce_dmg.dmg_mod * 100).toString() + "% [" + specialInfo[defender.special].name + "]. ";
+        battleInfo.logMsg += "[" + specialInfo[defender.special].name + "]. ";
         defSpec = true;
     }
 
     // Damage reduction for sequential attacks (originally for Urvan)
     if (battleInfo.lastActor === attacker.name) {
-
-        var multiplier = consecutiveDamageReduction(dmg, defender, attacker)
-
-        if (multiplier !== 1) {
-            dmg = roundNum(dmg * multiplier, true);
-            battleInfo.logMsg += "Opponent reduces damage from consecutive attack by " + ( (1 - multiplier) * 100 ).toFixed(0) + "%. ";
-        }
+        battleInfo = consecutiveDamageReduction(dmg, defender, attacker, battleInfo);
     }
 
     // First damage reduction effects (such as divine tyrfing and thani)
     if (defender.attacksReceived === 0 && firstDmgReduction(defender, attacker)) {
 
-        var multiplier = defender.weaponData.first_dmg_reduction.multiplier;
-
-        dmg = roundNum(dmg * multiplier, true);
-
-        battleInfo.logMsg += "Opponent reduces damage from first attack by " + ( (1 - multiplier) * 100 ).toFixed(0) + "%. ";
+        battleInfo.reduction *= defender.weaponData.first_dmg_reduction.multiplier;
+        battleInfo.logMsg += "Opponent reduces damage from first attack [" + defender.weaponData.name + "]. ";
     }
 
+    if(battleInfo.reduction !== 1) {
+        battleInfo.logMsg += "Opponent reduced damage by " + ((1 - battleInfo.reduction)*100).toString() + "% in total. ";
+        dmg = roundNum(dmg * battleInfo.reduction, true);
+    }
     //Hacky bugfix for the Brave Ike mirror match issue
     if(attacker.name === defender.name)
         attacker.name += "o";
@@ -1728,12 +2027,21 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
     }
 
     var HasDefSpecbeenBoosted=false;
+    var HasAtkSpecbeenBoosted=false;
 
     // update cooldowns
     if (atkSpec) {
         attacker.specCurrCooldown = getSpecialCooldown(attacker.specialData, attacker.weaponData, attacker.assistData);
         if(Object.is(attacker, battleInfo.defender))
-            HasDefSpecbeenBoosted=true
+        {
+            battleInfo.defSpecTriggered = true;
+            HasDefSpecbeenBoosted=true;
+        }
+        else
+        {
+            battleInfo.atkSpecTriggered = true;
+            HasAtkSpecbeenBoosted=true;
+        }
     } else if (attacker.specCurrCooldown > 0) {
 
         if (canActivateGuard(battleInfo, !initiator)) { // guard effect
@@ -1743,14 +2051,26 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
         attacker.specCurrCooldown -= 1;
 
         // heavy blade, felicia's plate
-        if(hasSpecAccel(battleInfo, attacker, defender, initiator, false) && Object.is(attacker, battleInfo.defender))
-            HasDefSpecbeenBoosted=true;
+        if(hasSpecAccel(battleInfo, attacker, defender, initiator, false)){
+            if(Object.is(attacker, battleInfo.defender))
+                HasDefSpecbeenBoosted=true;
+            else
+                HasAtkSpecbeenBoosted=true;
+        }
     }
 
     if (defSpec) {
         defender.specCurrCooldown = getSpecialCooldown(defender.specialData, defender.weaponData, defender.assistData);
         if(Object.is(defender, battleInfo.defender))
-            HasDefSpecbeenBoosted=true
+        {
+            battleInfo.defSpecTriggered = true;
+            HasDefSpecbeenBoosted=true;
+        }
+        else
+        {
+            battleInfo.atkSpecTriggered = true;
+            HasAtkSpecbeenBoosted=true;
+        }
     } else if (defender.specCurrCooldown > 0) {
         if (canActivateGuard(battleInfo, initiator)) { // guard effect
             defender.specCurrCooldown += 1;
@@ -1759,13 +2079,19 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
         defender.specCurrCooldown -= 1;
 
         // heavy blade, felicia's plate
-        if(hasSpecAccel(battleInfo, defender, attacker, initiator, true) && Object.is(defender, battleInfo.defender))
-            HasDefSpecbeenBoosted=true;
+        if(hasSpecAccel(battleInfo, defender, attacker, initiator, true)){
+            if(Object.is(attacker, battleInfo.defender))
+                HasDefSpecbeenBoosted=true;
+            else
+                HasAtkSpecbeenBoosted=true;
+        }
     }
 
     //Steady Breath, only if the special hasn't activated this turn and there haven't already been other increases
     if(!HasDefSpecbeenBoosted)
         enemyPhaseCharge(battleInfo, attacker, defender);
+    if(!HasAtkSpecbeenBoosted)
+        playerPhaseCharge(battleInfo, attacker, defender);
 
     // print hp before and after
     battleInfo.logMsg += "<br><span class='" + defClass + "'>" + defender.display + "</span> HP: " + defOldHP.toString() + " → " + defender.currHP.toString() + "" + healMsg + "</li>";
@@ -1782,8 +2108,9 @@ function singleCombat(battleInfo, initiator, logIntro, brave) {
     }
 
     // check for a brave weapon / Alm's upgraded Falchion
-    if (initiator && (attacker.weaponData.hasOwnProperty("brave") || (attacker.weaponData.hasOwnProperty("hp_brave") && (attacker.initHP >= roundNum(attacker.hp * attacker.weaponData.hp_brave, true)))) && !brave && defender.currHP > 0) {
-        battleInfo = singleCombat(battleInfo, initiator, "attacks again immediately [" + weaponInfo[attacker.weaponName].name + "]", true);
+    battleInfo = checkBrave(attacker, battleInfo);
+    if (initiator && battleInfo.brave && !brave && defender.currHP > 0) {
+        battleInfo = singleCombat(battleInfo, initiator, "attacks again immediately [" + battleInfo.braveSource + "]", true);
     }
 	else if(!initiator && (attacker.weaponData.hasOwnProperty("en_brave"))&& !brave && defender.currHP > 0) {
         battleInfo = singleCombat(battleInfo, initiator, "attacks again immediately [" + weaponInfo[attacker.weaponName].name + "]", true);
@@ -1830,6 +2157,28 @@ function getRefBonus(agent){
     }
 }
 
+function checkBrave(char, battleInfo)
+{
+    battleInfo.brave = false;
+    battleInfo.braveSource = "";
+    if(char.weaponData.hasOwnProperty("brave")) {
+        battleInfo.brave = true;
+        battleInfo.braveSource = char.weaponData.name;
+        return battleInfo;
+    }
+    if(char.weaponData.hasOwnProperty("hp_brave") && (char.initHP >= roundNum(char.hp * char.weaponData.hp_brave, true))) {
+        battleInfo.brave = true;
+        battleInfo.braveSource = char.weaponData.name;
+        return battleInfo;
+    }
+    if(char.passiveBData.hasOwnProperty("hp_brave") && (char.initHP >= roundNum(char.hp * char.passiveBData.hp_brave, true))) {
+        battleInfo.brave = true;
+        battleInfo.braveSource = char.passiveBData.name;
+        return battleInfo;
+    }
+    return battleInfo;
+}
+
 // simulates a battle between the characters currently on display and outputs to the battle log and results section
 // battleInfo contains all the initial combat data before the combat starts, displayMsg is true if we need to print the battle log
 // returns battleInfo
@@ -1837,6 +2186,8 @@ function simBattle(battleInfo, displayMsg) {
 
     var attacker = battleInfo.attacker;
     var defender = battleInfo.defender;
+    battleInfo.atkSpecTriggered = false;
+    battleInfo.defSpecTriggered = false;
 
     //Needed to make sure stuff isn't corrupted
     attacker.weaponData= Object.assign({}, weaponInfo[attacker.weaponName]);
@@ -1956,8 +2307,8 @@ function simBattle(battleInfo, displayMsg) {
     var defAttacks = false;
 
     //New follow-up logic
-    battleInfo = Follow(attacker, true, defender.weaponData.type, defender.color, defCC, battleInfo);
-    battleInfo = Follow(defender, false, attacker.weaponData.type, attacker.color, true, battleInfo);
+    battleInfo = Follow(attacker, defender, true, defCC, battleInfo);
+    battleInfo = Follow(defender, attacker, false, true, battleInfo);
 
     battleInfo = Prevent(attacker, defender, defender.weaponData.type, battleInfo, true);
     battleInfo = Prevent(defender, attacker, attacker.weaponData.type, battleInfo, false);
@@ -1968,16 +2319,16 @@ function simBattle(battleInfo, displayMsg) {
 
     // vantage info - if defender has hardy bearing, no vantage
     var vantage = false;
-    var vantagePassive = !defender.sealData.hasOwnProperty("remove_prio_hp") && canActivateVantage(defender.passiveBData, defender.initHP, defender.hp);
-    var vantageWeapon = !defender.sealData.hasOwnProperty("remove_prio_hp") && canActivateVantage(defender.weaponData, defender.initHP, defender.hp);
+    var vantagePassive = !defender.sealData.hasOwnProperty("remove_prio_hp") && !defender.weaponData.hasOwnProperty("remove_prio_hp") && canActivateVantage(defender.passiveBData, defender.initHP, defender.hp);
+    var vantageWeapon = !defender.sealData.hasOwnProperty("remove_prio_hp") && !defender.weaponData.hasOwnProperty("remove_prio_hp") && canActivateVantage(defender.weaponData, defender.initHP, defender.hp);
     var vantageSource="";
     if(defCC) //Fixes issue where defender wouldn't be able to be without a weapon
         vantageSource = vantagePassive ? skillInfo['b'][defender.passiveB].name : weaponInfo[defender.weaponName].name;
 
     // desperation info - if attacker has hardy bearing, no desperation
     var desperation = false;
-    var desperationPassive = !attacker.sealData.hasOwnProperty("remove_prio_hp") && canActivateDesperation(attacker.passiveBData, attacker.initHP, attacker.hp);
-    var desperationWeapon = !attacker.sealData.hasOwnProperty("remove_prio_hp") && canActivateDesperation(attacker.weaponData, attacker.initHP, attacker.hp);
+    var desperationPassive = !attacker.sealData.hasOwnProperty("remove_prio_hp") && !attacker.weaponData.hasOwnProperty("remove_prio_hp") && canActivateDesperation(attacker.passiveBData, attacker.initHP, attacker.hp);
+    var desperationWeapon = !attacker.sealData.hasOwnProperty("remove_prio_hp") && !attacker.weaponData.hasOwnProperty("remove_prio_hp") && canActivateDesperation(attacker.weaponData, attacker.initHP, attacker.hp);
     var desperationSource = desperationPassive ? skillInfo['b'][attacker.passiveB].name : weaponInfo[attacker.weaponName].name;
 
     //Check HP for Hardy bearing
@@ -1986,6 +2337,15 @@ function simBattle(battleInfo, displayMsg) {
         desperationPassive = false;
     }
     if(attacker.sealData.hasOwnProperty("remove_prio_hp") && (attacker.initHP >= attacker.hp*attacker.sealData.remove_prio_hp)) {
+        vantagePassive = false;
+        vantageWeapon = false;
+    }
+    //Check HP for Hardy bearing weapons
+    if(defender.weaponData.hasOwnProperty("remove_prio_hp") && (defender.initHP >= defender.hp*defender.weaponData.remove_prio_hp)) {
+        desperationWeapon = false;
+        desperationPassive = false;
+    }
+    if(attacker.weaponData.hasOwnProperty("remove_prio_hp") && (attacker.initHP >= attacker.hp*attacker.weaponData.remove_prio_hp)) {
         vantagePassive = false;
         vantageWeapon = false;
     }
@@ -2048,7 +2408,7 @@ function simBattle(battleInfo, displayMsg) {
                 battleInfo = singleCombat(battleInfo, false, "counterattacks, ignoring distance [" + weaponInfo[defender.weaponName].name + "]", false);
                 defAttacks = true;
             } else if (defender.weaponName !== "None" && defender.passiveAData.hasOwnProperty("counter") && defCC) {
-                battleInfo = singleCombat(battleInfo, false, "counterattacks, ignoring distance [" + defender.passiveA + "]", false);
+                battleInfo = singleCombat(battleInfo, false, "counterattacks, ignoring distance [" + skillInfo['a'][defender.passiveA].name + "]", false);
                 defAttacks = true;
             } else if (defender.weaponName !== "None" && attacker.weaponData.hasOwnProperty("prevent_counter")) {
                 battleInfo.logMsg += "<li class='battle-interaction'><span class='defender'>" + defender.display + "</span> " + " is prevented from counterattacking [" + weaponInfo[attacker.weaponName].name + "].</li>";
@@ -2143,17 +2503,29 @@ function simBattle(battleInfo, displayMsg) {
         atkRecoil += attacker.weaponData.full_hp_atk_recoil_dmg;
         atkRecoilSource += (atkRecoilSource.length > 0) ? ", " + weaponInfo[attacker.weaponName].name : weaponInfo[attacker.weaponName].name;
     }
+    if (attacker.currHP > 0 && attacker.passiveBData.hasOwnProperty("full_hp_atk_recoil_dmg") && attacker.initHP >= attacker.hp) {
+        atkRecoil += attacker.passiveBData.full_hp_atk_recoil_dmg;
+        atkRecoilSource += (atkRecoilSource.length > 0) ? ", " + attacker.passiveBData.name : attacker.passiveBData.name;
+    }
+    if (attacker.currHP > 0 && attacker.passiveAData.hasOwnProperty("full_hp_atk_recoil_dmg") && attacker.initHP >= attacker.hp) {
+        atkRecoil += attacker.passiveAData.full_hp_atk_recoil_dmg;
+        atkRecoilSource += (atkRecoilSource.length > 0) ? ", " + skillInfo['a'][attacker.passiveA].name : skillInfo['a'][attacker.passiveA].name;
+    }
     if (defender.currHP > 0 && defender.passiveAData.hasOwnProperty("recoil_dmg")) {
         defRecoil = defender.passiveAData.recoil_dmg;
         defRecoilSource = defender.passiveA;
     }
     if (defender.currHP > 0 && defender.weaponData.hasOwnProperty("recoil_dmg")) {
         defRecoil += defender.weaponData.recoil_dmg;
-        defRecoilSource += (atkRecoilSource.length > 0) ? ", " + weaponInfo[defender.weaponName].name : weaponInfo[defender.weaponName].name;
+        defRecoilSource += (defRecoilSource.length > 0) ? ", " + weaponInfo[defender.weaponName].name : weaponInfo[defender.weaponName].name;
     }
     if (defender.currHP > 0 && defender.weaponData.hasOwnProperty("full_hp_atk_recoil_dmg") && defender.initHP >= defender.hp) {
         defRecoil += defender.weaponData.full_hp_atk_recoil_dmg;
-        defRecoilSource += (atkRecoilSource.length > 0) ? ", " + weaponInfo[defender.weaponName].name : weaponInfo[defender.weaponName].name;
+        defRecoilSource += (defRecoilSource.length > 0) ? ", " + weaponInfo[defender.weaponName].name : weaponInfo[defender.weaponName].name;
+    }
+    if (defender.currHP > 0 && defender.passiveAData.hasOwnProperty("full_hp_atk_recoil_dmg") && defender.initHP >= defender.hp) {
+        defRecoil += defender.passiveAData.full_hp_atk_recoil_dmg;
+        defRecoilSource += (defRecoilSource.length > 0) ? ", " + skillInfo['a'][defender.passiveA].name : skillInfo['a'][defender.passiveA].name;
     }
     // print after combat effects
     battleInfo = afterCombatEffects(battleInfo, "attacker", defPoison, defPoisonSource, atkRecoil, atkRecoilSource, atkAfterHeal, atkAfterHealSource);
@@ -2172,11 +2544,17 @@ function simBattle(battleInfo, displayMsg) {
     if (attacker.currHP > 0 && attacker.weaponData.hasOwnProperty("after_mod") && atkAttacks) {
         applyBonus(battleInfo, attacker.weaponData.after_mod, weaponInfo[attacker.weaponName].name, true);
     }
+    if (attacker.currHP > 0 && attacker.specialData.hasOwnProperty("after_mod") && atkAttacks && battleInfo.atkSpecTriggered) {
+        applyBonus(battleInfo, attacker.specialData.after_mod, attacker.specialData.name, true);
+    }
     if (attacker.currHP > 0 && attacker.weaponData.hasOwnProperty("initiate_after_mod") && atkAttacks) {
         applyBonus(battleInfo, attacker.weaponData.initiate_after_mod, weaponInfo[attacker.weaponName].name, true);
     }
     if (defender.currHP > 0 && defender.weaponData.hasOwnProperty("after_mod") && defAttacks) {
         applyBonus(battleInfo, defender.weaponData.after_mod, weaponInfo[defender.weaponName].name, false);
+    }
+    if (defender.currHP > 0 && defender.specialData.hasOwnProperty("after_mod") && defAttacks && battleInfo.defSpecTriggered) {
+        applyBonus(battleInfo, defender.specialData.after_mod, defender.specialData.name, false);
     }
 
     // apply penalties
@@ -2335,6 +2713,13 @@ function swap() {
     oldAtkInfo.selectedRefinement = $("#refinement-1").val();
     oldAtkInfo.blessing = $("#blessing-1").html();
     oldAtkInfo.selectedBlessing = $("#blessing-1").val();
+    oldAtkInfo.blessing2 = $("#blessing2-1").html();
+    oldAtkInfo.selectedBlessing2 = $("#blessing2-1").val();
+    oldAtkInfo.blessing3 = $("#blessing3-1").html();
+    oldAtkInfo.selectedBlessing3 = $("#blessing3-1").val();
+    oldAtkInfo.allySupport = $("#ally-support-1").val();
+    oldAtkInfo.summonerSupport = $("#summoner-support-1").val();
+    oldAtkInfo.arena = $(".arena-score-1-read").text();
     oldAtkInfo.adjacent = $("#adjacent-1").val();
 
     oldAtkInfo.passiveA = $("#passive-a-1").html();
@@ -2349,6 +2734,15 @@ function swap() {
     oldAtkInfo.selectedPassiveC = $("#passive-c-1").val();
     oldAtkInfo.passiveCData = $("#passive-c-1").data("info");
     oldAtkInfo.passiveCDesc = $("#passive-c-desc-1").text();
+    oldAtkInfo.drive1 = $("#drive-1-1").html();
+    oldAtkInfo.selectedDrive1 = $("#drive-1-1").val();
+    oldAtkInfo.drive1Data = $("#drive-1-1").data("info");
+    oldAtkInfo.drive2 = $("#drive-2-1").html();
+    oldAtkInfo.selectedDrive2 = $("#drive-2-1").val();
+    oldAtkInfo.drive2Data = $("#drive-2-1").data("info");
+    oldAtkInfo.drive3 = $("#drive-3-1").html();
+    oldAtkInfo.selectedDrive3 = $("#drive-3-1").val();
+    oldAtkInfo.drive3Data = $("#drive-3-1").data("info");
     oldAtkInfo.assist = $("#assist-1").html();
     oldAtkInfo.selectedAssist = $("#assist-1").val();
     oldAtkInfo.assistData = $("#assist-1").data("info");
@@ -2384,7 +2778,8 @@ function swap() {
     oldAtkInfo.currHP = $("#curr-hp-1").val();
     oldAtkInfo.status = {
         "candlelight": $("#candlelight-status-1").is(":checked"),
-        "panic": $("#panic-status-1").is(":checked")
+        "panic": $("#panic-status-1").is(":checked"),
+        "triangleAdept": $("#triangle-adept-status-1").is(":checked")
     };
     if ($("#defensive-terrain-1").is(":checked")) {
         oldAtkInfo.terrain = "Defensive";
@@ -2413,6 +2808,13 @@ function swap() {
     $("#refinement-1").val($("#refinement-2").val());
     $("#blessing-1").html($("#blessing-2").html());
     $("#blessing-1").val($("#blessing-2").val());
+    $("#blessing2-1").html($("#blessing2-2").html());
+    $("#blessing2-1").val($("#blessing2-2").val());
+    $("#blessing3-1").html($("#blessing3-2").html());
+    $("#blessing3-1").val($("#blessing3-2").val());
+    $("#ally-support-1").val($("#ally-support-2").val());
+    $("#summoner-support-1").val($("#summoner-support-2").val());
+    $(".arena-score-1-read").text($(".arena-score-2-read").text());
     $("#weapon-1").data("info", $("#weapon-2").data("info"));
     $("#weapon-might-1").text($("#weapon-might-2").text());
     $("#weapon-range-1").text($("#weapon-range-2").text());
@@ -2432,6 +2834,15 @@ function swap() {
     $("#passive-c-1").val($("#passive-c-2").val());
     $("#passive-c-1").data("info", $("#passive-c-2").data("info"));
     $("#passive-c-desc-1").text($("#passive-c-desc-2").text());
+    $("#drive-1-1").html($("#drive-1-2").html());
+    $("#drive-1-1").val($("#drive-1-2").val());
+    $("#drive-1-1").data("info", $("#drive-1-2").data("info"));
+    $("#drive-2-1").html($("#drive-2-2").html());
+    $("#drive-2-1").val($("#drive-2-2").val());
+    $("#drive-2-1").data("info", $("#drive-2-2").data("info"));
+    $("#drive-3-1").html($("#drive-3-2").html());
+    $("#drive-3-1").val($("#drive-3-2").val());
+    $("#drive-3-1").data("info", $("#drive-3-2").data("info"));
     $("#assist-1").html($("#assist-2").html());
     $("#assist-1").val($("#assist-2").val());
     $("#assist-1").data("info", $("#assist-2").data("info"));
@@ -2469,6 +2880,7 @@ function swap() {
 
     $("#candlelight-status-1").prop("checked", $("#candlelight-status-2").is(":checked"));
     $("#panic-status-1").prop("checked", $("#panic-status-2").prop("checked"));
+    $("#triangle-adept-status-1").prop("checked", $("#triangle-adept-status-2").prop("checked"));
     $("#defensive-terrain-1").prop("checked", $("#defensive-terrain-2").is(":checked"));
 
     $("#rarity-1").html($("#rarity-2").html());
@@ -2492,6 +2904,13 @@ function swap() {
     $("#refinement-2").val(oldAtkInfo.selectedRefinement);
     $("#blessing-2").html(oldAtkInfo.blessing);
     $("#blessing-2").val(oldAtkInfo.selectedBlessing);
+    $("#blessing2-2").html(oldAtkInfo.blessing2);
+    $("#blessing2-2").val(oldAtkInfo.selectedBlessing2);
+    $("#blessing3-2").html(oldAtkInfo.blessing3);
+    $("#blessing3-2").val(oldAtkInfo.selectedBlessing3);
+    $("#ally-support-2").val(oldAtkInfo.allySupport);
+    $("#summoner-support-2").val(oldAtkInfo.summonerSupport);
+    $(".arena-score-2-read").text(oldAtkInfo.arena);
     $("#weapon-2").data("info", oldAtkInfo.weaponData);
     $("#weapon-might-2").text(oldAtkInfo.weaponMight);
     $("#weapon-range-2").text(oldAtkInfo.weaponRange);
@@ -2511,6 +2930,15 @@ function swap() {
     $("#passive-c-2").val(oldAtkInfo.selectedPassiveC);
     $("#passive-c-2").data("info", oldAtkInfo.passiveCData);
     $("#passive-c-desc-2").text(oldAtkInfo.passiveCDesc);
+    $("#drive-1-2").html(oldAtkInfo.drive1);
+    $("#drive-1-2").val(oldAtkInfo.selectedDrive1);
+    $("#drive-1-2").data("info", oldAtkInfo.drive1Data);
+    $("#drive-2-2").html(oldAtkInfo.drive2);
+    $("#drive-2-2").val(oldAtkInfo.selectedDrive2);
+    $("#drive-2-2").data("info", oldAtkInfo.drive2Data);
+    $("#drive-3-2").html(oldAtkInfo.drive3);
+    $("#drive-3-2").val(oldAtkInfo.selectedDrive3);
+    $("#drive-3-2").data("info", oldAtkInfo.drive3Data);
     $("#assist-2").html(oldAtkInfo.assist);
     $("#assist-2").val(oldAtkInfo.selectedAssist);
     $("#assist-2").data("info", oldAtkInfo.assistData);
@@ -2547,6 +2975,7 @@ function swap() {
     $(".hp-2-read").text(oldAtkInfo.hp);
     $("#panic-status-2").prop("checked", oldAtkInfo.status.panic);
     $("#candlelight-status-2").prop("checked", oldAtkInfo.status.candlelight);
+    $("#triangle-adept-status-2").prop("checked", oldAtkInfo.status.triangleAdept);
     if (oldAtkInfo.terrain === 'Default') {
         $("#defensive-terrain-2").prop("checked", false);
     }
@@ -2603,6 +3032,18 @@ function swap() {
     // no longer defaults
     defaultAttacker = false;
     defaultDefender = false;
+	
+    // show/hide collapsed section
+    if($("#char-1").val() === "Custom")
+        $("#extra-char-info-1").show(200);
+    else
+        $("#extra-char-info-1").hide(200);
+	
+    // show/hide collapsed section
+    if($("#char-2").val() === "Custom")
+        $("#extra-char-info-2").show(200);
+    else
+        $("#extra-char-info-2").hide(200);
 }
 
 // enables or disables a character panel
@@ -2844,7 +3285,7 @@ function rarityUpdateWeapon(charNum, rarity) {
             showWeapon(selectedWeapon, charNum, true, true);
         }
     } else if (rarity === 5) {
-        if ($("#weapon-" + charNum).val() !== "None" && $("#weapon-" + charNum + " option:selected").index() <= charInfo[charName].weapon.length) {
+        if (charInfo[charName].hasOwnProperty("weapon") && $("#weapon-" + charNum).val() !== "None" && $("#weapon-" + charNum + " option:selected").index() <= charInfo[charName].weapon.length) {
             selectedWeapon = charInfo[charName].weapon[0];
             $("#weapon-" + charNum).val(selectedWeapon).attr('selected', 'selected'); //.trigger("change.select2");
             showWeapon(selectedWeapon, charNum, true, true);
@@ -2932,7 +3373,6 @@ function rarityUpdateAssist(charNum, rarity) {
 // updates weapons and skills on rarity change
 // charNum determines the panel to look at, rarity is the rarity of the selected character
 function rarityUpdate(charNum, rarity) {
-
     rarityUpdateSpecial(charNum, rarity);
     rarityUpdatePassive(charNum, rarity, "a");
     rarityUpdatePassive(charNum, rarity, "b");
@@ -3023,6 +3463,20 @@ function applyOverrides(charNum) {
     if ($("#override-passive-s").val() !== "No Override") {
         $("#passive-s-" + charNum).val($("#override-passive-s").val()).attr('selected', 'selected');//.trigger("change.select2");
         getSkillData(charNum, "s", true);
+    }
+
+    // override drives
+    if ($("#override-drive-1").val() !== "None") {
+        $("#drive-1-" + charNum).val($("#override-drive-1").val()).attr('selected', 'selected');//.trigger("change.select2");
+        getDriveData(charNum, "1", true);
+    }
+    if ($("#override-drive-2").val() !== "None") {
+        $("#drive-2-" + charNum).val($("#override-drive-2").val()).attr('selected', 'selected');//.trigger("change.select2");
+        getDriveData(charNum, "2", true);
+    }
+    if ($("#override-drive-3").val() !== "None") {
+        $("#drive-3-" + charNum).val($("#override-drive-3").val()).attr('selected', 'selected');//.trigger("change.select2");
+        getDriveData(charNum, "3", true);
     }
 
     // override assist
@@ -3223,12 +3677,14 @@ function calculateMatchups(attacker) {
 
         // check one vs one radio button
         $("input[type=radio][name=mode]").val(["one-vs-one"]);
+        $("#one-vs-one").prop("checked", true);
 
         // show one vs one info
         $("#battle-log").stop(true, true).show(200);
         //$("#single-combat").stop(true, true).show(200);
         $("#matchups").stop(true, true).hide(200);
         $("#matchup-panel").stop(true, true).hide(200);
+        $("#matchup-overrides").stop(true, true).hide(200);
 
         // enable all inputs
         enableCharPanel("1", true);
@@ -3283,6 +3739,9 @@ function setupOverrides() {
     loadPassives("a", "#override-passive-a", false);
     loadPassives("b", "#override-passive-b", false);
     loadPassives("c", "#override-passive-c", false);
+    loadDrives("#override-drive-1");
+    loadDrives("#override-drive-2");
+    loadDrives("#override-drive-3");
     loadPassives("s", "#override-passive-s", false);
     loadAssists("#override-assist", false);
     loadSpecials("#override-special");
@@ -3497,12 +3956,17 @@ function importTeam(attacker) {
         importedChars[charCount].passiveA = "None";
         importedChars[charCount].passiveB = "None";
         importedChars[charCount].passiveC = "None";
+        importedChars[charCount].drive1 = "None";
+        importedChars[charCount].drive2 = "None";
+        importedChars[charCount].drive3 = "None";
         importedChars[charCount].assist = "None";
         importedChars[charCount].special = "None";
         importedChars[charCount].specCooldown = "0";
         importedChars[charCount].seal = "None";
         importedChars[charCount].refinement="None";
         importedChars[charCount].blessing="None";
+        importedChars[charCount].blessing2="None";
+        importedChars[charCount].blessing3="None";
         importedChars[charCount].status = [];
         importedChars[charCount].terrain = "Default";
         importedChars[charCount].adjacent = "0";
@@ -3640,7 +4104,7 @@ function importTeam(attacker) {
                 $("#import-error-msg").text("Import error: Missing stats for data-mined unit (line " + (textLine + 1).toString() + ")").show();
                 error = true;
             } else { // get base stats for character
-                var defaultStats = getStatTotals(importedChars[charCount].character, importedChars[charCount].weapon, importedChars[charCount].passiveA, importedChars[charCount].seal, parseInt(importedChars[charCount].rarity), parseInt(importedChars[charCount].level), parseInt(importedChars[charCount].merge), importedChars[charCount].boon, importedChars[charCount].bane, '', '', importedChars[charCount].refinement, importedChars[charCount].blessing);
+                var defaultStats = getStatTotals(importedChars[charCount].character, importedChars[charCount].weapon, importedChars[charCount].passiveA, importedChars[charCount].seal, parseInt(importedChars[charCount].rarity), parseInt(importedChars[charCount].level), parseInt(importedChars[charCount].merge), importedChars[charCount].boon, importedChars[charCount].bane, '', '', importedChars[charCount].refinement, importedChars[charCount].blessing, importedChars[charCount].blessing2, importedChars[charCount].blessing3);
 
                 importedChars[charCount].hp = defaultStats.hp;
                 importedChars[charCount].currentHP = defaultStats.hp;
@@ -3690,7 +4154,7 @@ function importTeam(attacker) {
 
         // get equipped weapon and skills
         textLine += statsIncluded ? 1 : 0;
-        var equips = {"weapon": false, "refinement": false, "assist": false, "special": false, "passive a": false, "passive b": false, "passive c": false, "sacred seal": false, "blessing": false};
+        var equips = {"weapon": false, "refinement": false, "assist": false, "special": false, "passive a": false, "passive b": false, "passive c": false, "sacred seal": false, "blessing": false, "blessing2": false, "blessing3": false, "infantry rush": false};
 
         while (true) {
             if (textLine >= importText.length) {
@@ -3716,7 +4180,11 @@ function importTeam(attacker) {
                         importedChars[charCount].refinement = line[1];
                     } else if (equipItem === "blessing") { // blessing
                         importedChars[charCount].blessing = line[1];
-                    } else if (equipItem === "assist") { // assist
+                    } else if (equipItem === "blessing2") { // blessing
+                        importedChars[charCount].blessing2 = line[1];
+                    } else if (equipItem === "blessing3") { // blessing
+                        importedChars[charCount].blessing3 = line[1];
+                    }  else if (equipItem === "assist") { // assist
                         if (assistInfo.hasOwnProperty(line[1]) && ((importedChars[charCount].character === "Custom") || (isInheritable(assistInfo[line[1]], importedChars[charCount].character) || (charInfo[importedChars[charCount].character].hasOwnProperty("assist") && charInfo[importedChars[charCount].character].assist[0] === line[1])))) {
                             importedChars[charCount].assist = line[1];
                         } else {
@@ -3765,6 +4233,30 @@ function importTeam(attacker) {
                                 break;
                             }
                         }
+                    } else if (equipItem === "drive 1") { // drive 1
+                        if (driveInfo.hasOwnProperty(line[1])) {
+                            importedChars[charCount].drive1 = line[1];
+                        } else {
+                            $("#import-error-msg").text("Import error: Invalid skill drive 1 (line " + (textLine + 1).toString() + ")").show();
+                            error = true;
+                            break;
+                        }
+                    } else if (equipItem === "drive 2") { // drive 2
+                        if (driveInfo.hasOwnProperty(line[1])) {
+                            importedChars[charCount].drive2 = line[1];
+                        } else {
+                            $("#import-error-msg").text("Import error: Invalid skill drive 2 (line " + (textLine + 1).toString() + ")").show();
+                            error = true;
+                            break;
+                        }
+                    } else if (equipItem === "drive 3") { // drive 3
+                        if (driveInfo.hasOwnProperty(line[1])) {
+                            importedChars[charCount].drive3 = line[1];
+                        } else {
+                            $("#import-error-msg").text("Import error: Invalid skill drive 3 (line " + (textLine + 1).toString() + ")").show();
+                            error = true;
+                            break;
+                        }
                     } else { // seal
                         if (skillInfo.s.hasOwnProperty(line[1]) && (importedChars[charCount].character === "Custom" || isInheritable(skillInfo.s[line[1]], importedChars[charCount].character))) {
                             importedChars[charCount].seal = line[1];
@@ -3796,7 +4288,7 @@ function importTeam(attacker) {
 
         // get stats if they were not included in the import
         if (!statsIncluded) {
-            var stats = getStatTotals(importedChars[charCount].character, importedChars[charCount].weapon, importedChars[charCount].passiveA, importedChars[charCount].seal, parseInt(importedChars[charCount].rarity), parseInt(importedChars[charCount].level), parseInt(importedChars[charCount].merge), importedChars[charCount].boon, importedChars[charCount].bane, "", "", importedChars[charCount].refinement, importedChars[charCount].blessing);
+            var stats = getStatTotals(importedChars[charCount].character, importedChars[charCount].weapon, importedChars[charCount].passiveA, importedChars[charCount].seal, parseInt(importedChars[charCount].rarity), parseInt(importedChars[charCount].level), parseInt(importedChars[charCount].merge), importedChars[charCount].boon, importedChars[charCount].bane, "", "", importedChars[charCount].refinement, importedChars[charCount].blessing, importedChars[charCount].blessing2, importedChars[charCount].blessing3);
 
             importedChars[charCount].hp = stats.hp;
             importedChars[charCount].currentHP = stats.hp;
@@ -3927,7 +4419,12 @@ function exportCharPanel(charNum) {
     exportText += $("#passive-c-" + charNum).val() !== "None" ? "Passive C: " + $("#passive-c-" + charNum).val() + "\r\n" : "";
     exportText += $("#passive-s-" + charNum).val() !== "None" ? "Sacred Seal: " + $("#passive-s-" + charNum).val() + "\r\n" : "";
     exportText += $("#refinement-" + charNum).val() !== "None" ? "Refinement: " + $("#refinement-" + charNum).val() + "\r\n" : "";
+    exportText += $("#drive-1-" + charNum).val() !== "None" ? "Drive 1: " + $("#drive-1-" + charNum).val() + "\r\n" : "";
+    exportText += $("#drive-2-" + charNum).val() !== "None" ? "Drive 2: " + $("#drive-2-" + charNum).val() + "\r\n" : "";
+    exportText += $("#drive-3-" + charNum).val() !== "None" ? "Drive 3: " + $("#drive-3-" + charNum).val() + "\r\n" : "";
     exportText += $("#blessing-" + charNum).val() !== "None" ? "Blessing: " + $("#blessing-" + charNum).val() + "\r\n" : "";
+    exportText += $("#blessing2-" + charNum).val() !== "None" ? "Blessing 2: " + $("#blessing2-" + charNum).val() + "\r\n" : "";
+    exportText += $("#blessing3-" + charNum).val() !== "None" ? "Blessing 3: " + $("#blessing3-" + charNum).val() + "\r\n" : "";
     exportText += "\r\n";
 
     document.querySelector('#import-area').focus();
@@ -3970,9 +4467,14 @@ function exportCharTab(container) {
     exportText += container.passiveA !== "None" ? "Passive A: " + container.passiveA + "\r\n" : "";
     exportText += container.passiveB !== "None" ? "Passive B: " + container.passiveB + "\r\n" : "";
     exportText += container.passiveC !== "None" ? "Passive C: " + container.passiveC + "\r\n" : "";
+    exportText += container.drive1 !== "None" ? "Drive 1: " + container.drive1 + "\r\n" : "";
+    exportText += container.drive2 !== "None" ? "Drive 2: " + container.drive2 + "\r\n" : "";
+    exportText += container.drive3 !== "None" ? "Drive 3: " + container.drive3 + "\r\n" : "";
     exportText += container.seal !== "None" ? "Sacred Seal: " + container.seal + "\r\n" : "";
     exportText += container.refinement!== "None" ? "Refinement: " + container.refinement + "\r\n" : "";
     exportText += container.blessing!== "None" ? "Blessing: " + container.blessing + "\r\n" : "";
+    exportText += container.blessing2!== "None" ? "Blessing 2: " + container.blessing2 + "\r\n" : "";
+    exportText += container.blessing3!== "None" ? "Blessing 3: " + container.blessing3 + "\r\n" : "";
     exportText += "\r\n";
 
     return exportText;
@@ -4029,11 +4531,65 @@ function clearTeam(attacker) {
         selectedAttacker = 0;
         selectCharTab(true, 0);
         $("#char-1").val($("#char-1 option:eq(0)").val()).attr('selected', 'selected'); //.trigger("change.select2");
+
+        $("#summoner-support-1").val("None");
+        $("#ally-support-1").val("None");
+
+        //statuses
+        $("#triangle-adept-status-1").prop("checked", false);
+        $("#panic-status-1").prop("checked", false);
+        $("#candlelight-status-1").prop("checked", false);
+        $("#defensive-terrain-1").prop("checked", false);
+
+        //bonuses
+        $("#atk-bonus-1").val("0");
+        $("#spd-bonus-1").val("0");
+        $("#def-bonus-1").val("0");
+        $("#res-bonus-1").val("0");
+
+        //penalties
+        $("#atk-penalty-1").val("0");
+        $("#spd-penalty-1").val("0");
+        $("#def-penalty-1").val("0");
+        $("#res-penalty-1").val("0");
+
+        //spurs
+        $("#atk-spur-1").val("0");
+        $("#spd-spur-1").val("0");
+        $("#def-spur-1").val("0");
+        $("#res-spur-1").val("0");
         displayChar($("#char-1").val(), "1", true);
     } else {
         selectedDefender = 0;
         selectCharTab(false, 0);
         $("#char-2").val($("#char-2 option:eq(1)").val()).attr('selected', 'selected'); //.trigger("change.select2");
+
+        $("#summoner-support-2").val("None");
+        $("#ally-support-2").val("None");
+
+        //statuses
+        $("#triangle-adept-status-2").prop("checked", false);
+        $("#panic-status-2").prop("checked", false);
+        $("#candlelight-status-2").prop("checked", false);
+        $("#defensive-terrain-2").prop("checked", false);
+
+        //bonuses
+        $("#atk-bonus-2").val("0");
+        $("#spd-bonus-2").val("0");
+        $("#def-bonus-2").val("0");
+        $("#res-bonus-2").val("0");
+
+        //penalties
+        $("#atk-penalty-2").val("0");
+        $("#spd-penalty-2").val("0");
+        $("#def-penalty-2").val("0");
+        $("#res-penalty-2").val("0");
+
+        //spurs
+        $("#atk-spur-2").val("0");
+        $("#spd-spur-2").val("0");
+        $("#def-spur-2").val("0");
+        $("#res-spur-2").val("0");
         displayChar($("#char-2").val(), "2", true);
     }
 }
